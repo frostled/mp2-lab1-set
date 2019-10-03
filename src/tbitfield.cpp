@@ -9,12 +9,15 @@
 
 TBitField::TBitField(int len)
 {
-	BitLen = len;
-	MemLen = (BitLen + 31) >> 5;
-	pMem = new TELEM[MemLen]; 
-	if (pMem != NULL) {
-		for (int i = 0; i < MemLen; i++) pMem[i] = 0;
+	if (len > -1) {
+		BitLen = len;
+		MemLen = (BitLen + 31) >> 5;
+		pMem = new TELEM[MemLen];
+		if (pMem != NULL) {
+			for (int i = 0; i < MemLen; i++) pMem[i] = 0;
+		}
 	}
+	else throw - 1;
 }
 
 TBitField::TBitField(const TBitField &bf) // конструктор копирования
@@ -34,14 +37,21 @@ TBitField::~TBitField()
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
-	return (n >> 5);
+	if (n > -1) {
+		return (n >> 5);
+	}
+	else throw - 1;
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-	TELEM mask = 1;
-	mask << (n & 31);
-	return mask;
+	if (n > -1) {
+
+		TELEM mask = 1;
+		mask = mask << (n & 31);
+		return mask;
+	}
+	else throw - 1;
 }
 
 // доступ к битам битового поля
@@ -137,7 +147,16 @@ TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 TBitField TBitField::operator~(void) // отрицание
 {
 	TBitField result(BitLen);
-	for (int i = 0; i < MemLen; i++) result.pMem[i] = ~pMem[i];
+	for (int i = 0; i < MemLen; i++) {
+		for (int k = 0; k < BitLen; k++) {
+			if (GetBit(k) == 0) { 
+				result.SetBit(k);
+			}
+			else { 
+				result.ClrBit(k);
+			}
+		}
+	}
 	return result;
 }
 
@@ -165,7 +184,7 @@ istream &operator>>(istream &istr, TBitField &bf) // ввод
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
 	for (int i = 0; i < bf.BitLen; i++) {
-		if (bf.GetBit == 0) ostr << "0";
+		if (bf.GetBit(i) == 0) ostr << "0";
 		else ostr << "1";
 	}
 	return ostr;
