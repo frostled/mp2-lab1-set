@@ -96,7 +96,14 @@ TSet TSet::operator+(const TSet &s) // объединение
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
-	return *this;
+	if ((Elem > -1) && (Elem < BitField.GetLength())) {
+		TSet result(MaxPower);
+		TBitField E(Elem);
+		E.SetBit(Elem);
+		result.BitField = BitField | E;
+		return result;
+	}
+	else throw - 1;
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом
