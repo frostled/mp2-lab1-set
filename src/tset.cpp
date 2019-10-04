@@ -41,39 +41,57 @@ int TSet::GetMaxPower(void) const // получить макс. к-во эл-т�
 	return MaxPower;
 }
 
-int TSet::IsMember(const int Elem) const // элемент множества?
+int TSet::IsMember(const int Elem) const // элемент множества? ELEM - НОМЕР БИТА
 {
-	return 0;
+	if (BitField.GetBit(Elem) == 0) return 0;
+	else return 1;
 }
 
 void TSet::InsElem(const int Elem) // включение элемента множества
 {
+	BitField.SetBit(Elem);
 }
 
 void TSet::DelElem(const int Elem) // исключение элемента множества
 {
+	BitField.ClrBit(Elem);
 }
 
 // теоретико-множественные операции
 
 TSet& TSet::operator=(const TSet &s) // присваивание
 {
-	return *this;
+	if (this == &s) {
+		return *this;
+	}
+	else {
+		MaxPower = s.MaxPower;
+		BitField = s.BitField;
+		return *this;
+	}
 }
 
 int TSet::operator==(const TSet &s) const // сравнение
 {
-    return 0;
+	if (MaxPower != s.MaxPower) {
+		return 0;
+	}
+	else if (BitField != s.BitField) {
+		return 0;
+	}
+	else return 1;
 }
 
 int TSet::operator!=(const TSet &s) const // сравнение
 {
-	return 0;
+	return !(*this == s);
 }
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
-	return *this;
+	TSet result(MaxPower);
+	result.BitField = BitField | s.BitField;
+	return result;
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
