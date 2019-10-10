@@ -164,15 +164,15 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
-	int a = 0;
+	char a;
 	int i = 0;
-	while ((a == 0) || (a == 1)) {
+	while ((a == '0') || (a == '1')) {
 		istr >> a;
-		if (a == 0) {
+		if (a == '0') {
 			bf.ClrBit(i);
 			i++;
 		}
-		else if (a == 1) {
+		else if (a == '1') {
 			bf.SetBit(i);
 			i++;
 		}
@@ -184,8 +184,9 @@ istream &operator>>(istream &istr, TBitField &bf) // ввод
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
 	for (int i = 0; i < bf.BitLen; i++) {
-		if (bf.GetBit(i) == 0) ostr << "0";
-		else ostr << "1";
+		if (bf.GetBit(i) == 0) ostr << '0';
+		else ostr << '1' ;
 	}
+	ostr << endl;
 	return ostr;
 }

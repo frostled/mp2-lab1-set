@@ -96,11 +96,19 @@ TSet TSet::operator+(const TSet &s) // объединение
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
+	//СЕМЬ БЕД - ОДИН ОТВЕТ
+	//ВСТАВЬ КОСТЫЛЬ, ИЗОБРЕТИ ВЕЛОСИПЕД
 	if ((Elem > -1) && (Elem < BitField.GetLength())) {
+		TBitField E(Elem); //Битовое поле для Elem
+		TELEM mask = 1;
+		for (int i = 0; i < Elem; i++) {
+			mask = 1;
+			mask = mask << (i & 31);
+			if ((Elem & mask) != 0) { E.SetBit(i); cout << "done"; }
+		}
+		TSet E1(E);
 		TSet result(MaxPower);
-		TBitField E(Elem);
-		E.SetBit(Elem);
-		result.BitField = BitField | E;
+		result = *this + E1;
 		return result;
 	}
 	else throw - 1;
@@ -113,22 +121,26 @@ TSet TSet::operator-(const int Elem) // разность с элементом
 
 TSet TSet::operator*(const TSet &s) // пересечение
 {
-	return *this;
+	TSet result(BitField & s.BitField);
+	return result;
 }
 
 TSet TSet::operator~(void) // дополнение
 {
-	return *this;
+	TSet result(~BitField);
+	return result;
 }
 
 // перегрузка ввода/вывода
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
+	istr >> s.BitField;
 	return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
+	ostr << s.BitField;
 	return ostr;
 }
