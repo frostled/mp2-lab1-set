@@ -16,7 +16,7 @@ TSet::TSet(int mp) : BitField(mp)
 }
 
 // конструктор копирования
-TSet::TSet(const TSet &s) : BitField(s.MaxPower)
+TSet::TSet(const TSet &s) : BitField(s.BitField)
 {
 	if (s.MaxPower > -1) {
 		MaxPower = s.MaxPower;
@@ -89,6 +89,7 @@ int TSet::operator!=(const TSet &s) const // сравнение
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
+	if (s.MaxPower > MaxPower) MaxPower = s.MaxPower;
 	TSet result(MaxPower);
 	result.BitField = BitField | s.BitField;
 	return result;
@@ -98,20 +99,9 @@ TSet TSet::operator+(const int Elem) // объединение с элемент
 {
 	//СЕМЬ БЕД - ОДИН ОТВЕТ
 	//ВСТАВЬ КОСТЫЛЬ, ИЗОБРЕТИ ВЕЛОСИПЕД
-	if ((Elem > -1) && (Elem < BitField.GetLength())) {
-		TBitField E(Elem); //Битовое поле для Elem
-		TELEM mask = 1;
-		for (int i = 0; i < Elem; i++) {
-			mask = 1;
-			mask = mask << (i & 31);
-			if ((Elem & mask) != 0) { E.SetBit(i); cout << "done"; }
-		}
-		TSet E1(E);
-		TSet result(MaxPower);
-		result = *this + E1;
-		return result;
-	}
-	else throw - 1;
+	TSet res(*this);
+	res.BitField.SetBit(Elem);
+	return res;
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом

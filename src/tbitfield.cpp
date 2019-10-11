@@ -129,8 +129,8 @@ TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 	int tempLen = BitLen;
 	if (bf.BitLen > BitLen) tempLen = bf.BitLen;
 	TBitField result(tempLen);
-	for (int i = 0; i < MemLen; i++) result.pMem[i] = pMem[i];
-	for (int i = 0; i < result.MemLen; i++) result.pMem[i] = result.pMem[i] | bf.pMem[i];
+//	for (int i = 0; i < MemLen; i++) result.pMem[i] = pMem[i];
+	for (int i = 0; i < result.MemLen; i++) result.pMem[i] = pMem[i] | bf.pMem[i];
 	return result;
 }
 
@@ -139,16 +139,19 @@ TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 	int tempLen = BitLen;
 	if (bf.BitLen > BitLen) tempLen = bf.BitLen;
 	TBitField result(tempLen);
-	for (int i = 0; i < MemLen; i++) result.pMem[i] = pMem[i];
-	for (int i = 0; i < result.MemLen; i++) result.pMem[i] = result.pMem[i] & bf.pMem[i];
+//	for (int i = 0; i < MemLen; i++) result.pMem[i] = pMem[i];
+	for (int i = 0; i < result.MemLen; i++) result.pMem[i] = pMem[i] & bf.pMem[i];
 	return result;
 }
 
 TBitField TBitField::operator~(void) // отрицание
 {
 	TBitField result(BitLen);
-	for (int i = 0; i < MemLen; i++) {
-		for (int k = 0; k < BitLen; k++) {
+	int cnt = (BitLen / 32);
+	for (int i = 0; i < cnt; i++)
+		result.pMem[i] = ~pMem[i];
+
+		for (int k = cnt * 32; k < BitLen; k++) {
 			if (GetBit(k) == 0) { 
 				result.SetBit(k);
 			}
@@ -156,7 +159,6 @@ TBitField TBitField::operator~(void) // отрицание
 				result.ClrBit(k);
 			}
 		}
-	}
 	return result;
 }
 
